@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Be Aware App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_news">MY NEWS</string>
+    <string name="business">BUSINESS</string>
+    <string name="sports">SPORTS</string>
+    <string name="health">HEALTH</string>
+    <string name="tech">TECHNOLOGY</string>
+    <string name="science">SCIENCE</string>
+</resources>
