@@ -1,5 +1,7 @@
 package com.passion.beawareapp.models;
 
+import android.text.TextUtils;
+
 import java.net.URL;
 
 public class News {
@@ -61,6 +63,14 @@ public class News {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean validate() {
+        if(TextUtils.isEmpty(title) || TextUtils.isEmpty(url_to_img) || TextUtils.isEmpty(desc)){
+            return false;
+        }
+
+        return true;
     }
 }
 

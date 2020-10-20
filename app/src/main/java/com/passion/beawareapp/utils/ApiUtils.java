@@ -162,8 +162,11 @@ public class ApiUtils {
                 news.setUtl_to_img( article.getString("urlToImage"));
                 news.setContent( article.getString( "content"));
 
-                // collect
-                newsList.add(news);
+                // validata news
+                if( news.validate() ){
+                    // collect
+                    newsList.add(news);
+                }
             }
         }
         catch(JSONException e ){
