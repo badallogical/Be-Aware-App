@@ -7,9 +7,13 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setElevation(0);
 
+
         // setup View Pager
         vp = (ViewPager) findViewById(R.id.viewpager);
         pAdapter = new PageAdapter( getSupportFragmentManager(), this );
@@ -47,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         tab.setupWithViewPager(vp);
     }
 
-    public void setFav(View v) {
+        public void setFav(View v) {
         Log.v("message", "called");
         ImageView imgview = (ImageView) v;
         if (imgview.getTag() == "false") {

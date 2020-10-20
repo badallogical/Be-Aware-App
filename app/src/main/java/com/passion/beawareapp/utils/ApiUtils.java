@@ -54,10 +54,15 @@ public class ApiUtils {
 
 
 
-        // parse json to get ArrayList of news
-        news = parseNewsFromJson( jsonResponse );
+        if( jsonResponse.equals("bad Request")){
+            return null;
+        }
+        else{
+            // parse json to get ArrayList of news
+            news = parseNewsFromJson( jsonResponse );
+            return news;
+        }
 
-        return news;
     }
 
 
@@ -92,8 +97,7 @@ public class ApiUtils {
                 jsonResponse = convertToString(inputStream);
             }
             else{
-                Log.v( LOG + "makeHttpRequest" , "Failed Response");
-                Toast.makeText(null, "Fail", Toast.LENGTH_LONG );
+                return "bad Request";
             }
 
 

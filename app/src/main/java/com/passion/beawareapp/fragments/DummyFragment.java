@@ -1,6 +1,14 @@
 package com.passion.beawareapp.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +30,7 @@ import com.passion.beawareapp.models.News;
 import com.passion.beawareapp.utils.ApiUtils;
 import com.passion.beawareapp.utils.NewsLoader;
 
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 
 
@@ -42,8 +51,38 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //initiate loader
-        getLoaderManager().initLoader(Loader_id, null, this);
+        if( !isConnectedToNetwork() ){
+            // notify
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("No Internet Connection");
+            alert.setMessage("Check your internet connection and try again");
+            alert.setIcon(R.drawable.ic_error_outline_black_24dp);
+            AlertDialog dialog = alert.create();
+            dialog.show();
+        }
+
+        // handler to post code from other thread to main thread
+        final Handler mainThread = new Handler(Looper.getMainLooper());
+
+        // thread for waiting for connection and allow the pop ui to work poperly in main thread
+        new Thread() {
+            @Override
+            public void run() {
+
+                while( !isConnectedToNetwork() );
+
+                // posting to the code to initiate laoding data via api call, to main thread.
+                mainThread.post( new Runnable(){
+                    @Override
+                    public void run() {
+                        getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
+                    }
+                });
+
+            }
+        }.start();
+
+
     }
 
     @Override
@@ -52,6 +91,13 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_dummy, container, false);
         return v;
+    }
+
+    private boolean isConnectedToNetwork() {
+        ConnectivityManager connMng = (ConnectivityManager) getContext().getSystemService(ContextThemeWrapper.CONNECTIVITY_SERVICE);
+        if (connMng.getActiveNetworkInfo() != null && connMng.getActiveNetworkInfo().isConnected())
+            return true;
+        return false;
     }
 
 
@@ -79,6 +125,15 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
         // done progess
         ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.progress);
         progressBar.setVisibility(ProgressBar.GONE);
+
+        if( data == null ){
+            AlertDialog.Builder alertbox = new AlertDialog.Builder(getContext());
+            alertbox.setTitle("API Limit Exceed");
+            alertbox.setIcon(R.drawable.ic_error_outline_black_24dp);
+            alertbox.setMessage("News Request Exceded the Limit, upgrade API version");
+            alertbox.create().show();
+            return;
+        }
 
         // setup View Pager
         viewPager2 = (ViewPager2) getView().findViewById(R.id.viewpager2);

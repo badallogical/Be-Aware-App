@@ -51,10 +51,10 @@
         <TextView
             android:id="@+id/news_desc"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="Google News is a news aggregator service developed by Google. It presents a continuous flow of articles organized from thousands of publishers and magazines. Google News is available as an app on Android, iOS, and the Web. Google released a beta version in September Google News is a news aggregator service developed by Google. It presents a continuous flow of articles organized from thousands of publishers and magazines. Google News is available as an app on Android, iOS, and the Web. Google released a beta version in September2002 and the official app in January 2006. Wikipediav"
             android:layout_marginTop="16sp"
+            android:textColor="#222222"
             android:textSize="14sp"
             android:lineHeight="20sp"
             android:fontFamily="sans-serif-light"

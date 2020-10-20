@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.passion.beawareapp.R;
 import com.passion.beawareapp.fragments.DummyFragment;
+import com.passion.beawareapp.models.Developer;
 import com.passion.beawareapp.models.News;
 import com.passion.beawareapp.utils.ApiUtils;
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class PageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        if( position == 6 ){
+            return new Developer();
+        }
         return new DummyFragment(position);
     }
 
@@ -38,12 +42,13 @@ public class PageAdapter extends FragmentPagerAdapter {
            case 3: return context.getString(R.string.sports);
            case 4: return context.getString(R.string.science);
            case 5: return context.getString(R.string.tech);
+           case 6: return "Developer Info";
            default: return context.getString(R.string.my_news);
        }
     }
 
     @Override
     public int getCount() {
-        return ApiUtils.apiCount;
+        return ApiUtils.apiCount + 1;
     }
 }
