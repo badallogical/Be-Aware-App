@@ -75,7 +75,7 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
                 mainThread.post( new Runnable(){
                     @Override
                     public void run() {
-                        getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
+                        DummyFragment.this.getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
                     }
                 });
 
