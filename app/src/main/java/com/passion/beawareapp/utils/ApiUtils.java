@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.passion.beawareapp.models.News;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,9 +22,17 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttp;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class ApiUtils {
     // Logging
     private final static String LOG = ApiUtils.class.getName();
+
 
     // News API
     public static final String URL_INDIA_NEWS = "https://newsapi.org/v2/top-headlines?sources=google-news-in&apiKey=c9f6b354d59f483ca473c71976365692";
@@ -37,9 +46,9 @@ public class ApiUtils {
     public static ArrayList<News> makeHttpRequestFetchResponse(String url_string ){
 
         Log.v(LOG, "entered");
+        String jsonResponse = "";
 
         ArrayList<News> news = null;
-        String jsonResponse = null;
 
         // get url
         URL url = createURL( url_string );
@@ -47,21 +56,17 @@ public class ApiUtils {
         // get Response
         try {
             jsonResponse = makeHttpRequest(url);
+            Log.v(LOG, jsonResponse);
         }
         catch( IOException e ){
             Log.v( LOG + "makeHttp", " "+e.getMessage() );
         }
 
 
+        // parse json to get ArrayList of news
+        news = parseNewsFromJson( jsonResponse );
+        return news;
 
-        if( jsonResponse.equals("bad Request")){
-            return null;
-        }
-        else{
-            // parse json to get ArrayList of news
-            news = parseNewsFromJson( jsonResponse );
-            return news;
-        }
 
     }
 
@@ -81,41 +86,17 @@ public class ApiUtils {
     public static String makeHttpRequest(URL url) throws IOException {
 
         String jsonResponse = "";
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-        try{
-            urlConnection = (HttpURLConnection)url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setReadTimeout(10000);
-            urlConnection.connect();
 
-            // check if connected
-            if( urlConnection.getResponseCode() == 200 ){
-                // successful
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = convertToString(inputStream);
-            }
-            else{
-                return "bad Request";
-            }
+        // get url response with okhttp
+        OkHttpClient client = new OkHttpClient();
 
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
 
-        }
-        catch( ArithmeticException e){
-            Log.v( LOG + "makeHttpRequest", " "+ e.getMessage() );
-        }
-        finally{
-            // close connection
-            if( urlConnection != null )
-                urlConnection.disconnect();
-
-            // close inputStream
-            if( inputStream != null )
-                inputStream.close();
-        }
-
-        Log.v(LOG, jsonResponse );
+        try( Response response  = client.newCall(request).execute()){
+            jsonResponse = response.body().string();
+        };
 
         return jsonResponse;
     }
@@ -135,6 +116,7 @@ public class ApiUtils {
 
             String line = br.readLine();
             while( line != null ){
+                Log.v(LOG, line);
                 jsonResponse.append(line);
                 line = br.readLine();
             }

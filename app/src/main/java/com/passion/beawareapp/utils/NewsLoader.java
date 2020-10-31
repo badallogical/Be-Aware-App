@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class NewsLoader extends AsyncTaskLoader<ArrayList<News>> {
 
-    String url_string = null;
+    String url_string;
 
     public NewsLoader( Context context, String url_string) {
         super(context);

@@ -8,11 +8,13 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,7 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
     ViewPager2 viewPager2;
     PageStateAdapter pageStateAdapter;
     int category;
+    ArrayList<News> data = null;
 
     final  int Loader_id = 1;
 
@@ -61,27 +64,27 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
             dialog.show();
         }
 
-        // handler to post code from other thread to main thread
-        final Handler mainThread = new Handler(Looper.getMainLooper());
 
-        // thread for waiting for connection and allow the pop ui to work poperly in main thread
-        new Thread() {
-            @Override
-            public void run() {
 
-                while( !isConnectedToNetwork() );
+            // handler to post code from other thread to main thread
+            final Handler mainThread = new Handler(Looper.getMainLooper());
 
-                // posting to the code to initiate laoding data via api call, to main thread.
-                mainThread.post( new Runnable(){
-                    @Override
-                    public void run() {
-                        DummyFragment.this.getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
-                    }
-                });
+            // thread for waiting for connection and allow the pop ui to work poperly in main thread
+            new Thread() {
+                @Override
+                public void run() {
 
-            }
-        }.start();
+                    while (!isConnectedToNetwork()) ;
 
+                    // posting to the code to initiate laoding data via api call, to main thread.
+                    mainThread.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            DummyFragment.this.getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
+                        }
+                    });
+                }
+            }.start();
 
     }
 
@@ -128,11 +131,14 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
 
         if( data == null ){
             AlertDialog.Builder alertbox = new AlertDialog.Builder(getContext());
-            alertbox.setTitle("API Limit Exceed");
+            alertbox.setTitle("API Request Failed");
             alertbox.setIcon(R.drawable.ic_error_outline_black_24dp);
-            alertbox.setMessage("News Request Exceded the Limit, upgrade API version");
+            alertbox.setMessage("Something went wrong with API request");
             alertbox.create().show();
             return;
+        }
+        else{
+            this.data = data;
         }
 
         // setup View Pager

@@ -1,10 +1,14 @@
 package com.passion.beawareapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
+
+import com.google.android.material.internal.ParcelableSparseBooleanArray;
 
 import java.net.URL;
 
-public class News {
+public class News implements Parcelable {
 
     private String title;
     private String desc;
@@ -23,6 +27,40 @@ public class News {
         this.url_to_img = url_to_img;
         this.content = content;
     }
+
+    protected News(Parcel in) {
+        title = in.readString();
+        desc = in.readString();
+        url_to_src = in.readString();
+        url_to_img = in.readString();
+        content = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(desc);
+        dest.writeString(url_to_src);
+        dest.writeString(url_to_img);
+        dest.writeString(content);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<News> CREATOR = new Creator<News>() {
+        @Override
+        public News createFromParcel(Parcel in) {
+            return new News(in);
+        }
+
+        @Override
+        public News[] newArray(int size) {
+            return new News[size];
+        }
+    };
 
     public String getTitle() {
         return title;
