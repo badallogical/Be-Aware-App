@@ -76,7 +76,7 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
 
                     while (!isConnectedToNetwork()) ;
 
-                    // posting to the code to initiate laoding data via api call, to main thread.
+                    // posting to the code to initiate loading data via api call, to main thread.
                     mainThread.post(new Runnable() {
                         @Override
                         public void run() {
