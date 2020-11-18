@@ -92,17 +92,17 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader<ArrayList<News>> onCreateLoader(int id, Bundle args) {
         switch (category) {
             case 1:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_BUSINESS);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_BUSINESS, context);
             case 2:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_HEALTH);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_HEALTH, context);
             case 3:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_SPORTS);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_SPORTS, context);
             case 4:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_SCIENCE);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_SCIENCE, context);
             case 5:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_TECH);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_TECH, context);
             default:
-                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_NEWS);
+                return new NewsLoader(getContext(), ApiUtils.URL_INDIA_NEWS, context);
 
         }
     }
