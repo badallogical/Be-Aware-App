@@ -9,4 +9,6 @@
     <string name="health">HEALTH</string>
     <string name="tech">TECHNOLOGY</string>
     <string name="science">SCIENCE</string>
+    <string name="SharedPreference1">com.passion.beawareapp.SharedPreference1</string>
+    <string name="SharedPreference2">com.passion.beawareapp.SharedPreference2</string>
 </resources>

@@ -45,6 +45,7 @@ public class ChildFragment extends Fragment {
         image = (ImageView) v.findViewById(R.id.image_id);
         Glide.with(this).load(news.getUtl_to_img()).placeholder(R.drawable.be_aware).into(image);
 
+
         desc = (TextView) v.findViewById(R.id.news_desc);
         desc.setText( news.getDesc() );
 

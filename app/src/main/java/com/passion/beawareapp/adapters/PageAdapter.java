@@ -12,6 +12,7 @@ import com.passion.beawareapp.models.Developer;
 import com.passion.beawareapp.models.News;
 import com.passion.beawareapp.utils.ApiUtils;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
@@ -31,7 +32,8 @@ public class PageAdapter extends FragmentPagerAdapter {
         if( position == 6 ){
             return new Developer();
         }
-        return new DummyFragment(position);
+
+        return new DummyFragment(position, context);
     }
 
     @Override

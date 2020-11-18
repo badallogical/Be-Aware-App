@@ -2,6 +2,8 @@ package com.passion.beawareapp.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
@@ -34,6 +38,9 @@ import com.passion.beawareapp.utils.NewsLoader;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class DummyFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<News>> {
@@ -43,48 +50,25 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
     PageStateAdapter pageStateAdapter;
     int category;
     ArrayList<News> data = null;
+    Context context;
 
-    final  int Loader_id = 1;
+    // child fragment last checkpoint
+    public static Map<Integer, Integer> lastChildAt = new HashMap<>();
 
-    public DummyFragment(int category) {
+
+    final int Loader_id = 1;
+
+    public DummyFragment(int category, Context context) {
         this.category = category;
+        this.context = context;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if( !isConnectedToNetwork() ){
-            // notify
-            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-            alert.setTitle("No Internet Connection");
-            alert.setMessage("Check your internet connection and try again");
-            alert.setIcon(R.drawable.ic_error_outline_black_24dp);
-            AlertDialog dialog = alert.create();
-            dialog.show();
-        }
-
-
-
-            // handler to post code from other thread to main thread
-            final Handler mainThread = new Handler(Looper.getMainLooper());
-
-            // thread for waiting for connection and allow the pop ui to work poperly in main thread
-            new Thread() {
-                @Override
-                public void run() {
-
-                    while (!isConnectedToNetwork()) ;
-
-                    // posting to the code to initiate loading data via api call, to main thread.
-                    mainThread.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            DummyFragment.this.getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
-                        }
-                    });
-                }
-            }.start();
+        // Loading the news on to the corresponding category ( online or offline depend on connection )
+        DummyFragment.this.getLoaderManager().initLoader(Loader_id, null, DummyFragment.this);
 
     }
 
@@ -105,7 +89,7 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
 
 
     @Override
-    public Loader<ArrayList<News>> onCreateLoader(int id,  Bundle args) {
+    public Loader<ArrayList<News>> onCreateLoader(int id, Bundle args) {
         switch (category) {
             case 1:
                 return new NewsLoader(getContext(), ApiUtils.URL_INDIA_BUSINESS);
@@ -129,22 +113,26 @@ public class DummyFragment extends Fragment implements LoaderManager.LoaderCallb
         ProgressBar progressBar = (ProgressBar) getView().findViewById(R.id.progress);
         progressBar.setVisibility(ProgressBar.GONE);
 
-        if( data == null ){
+        if (data == null) {
             AlertDialog.Builder alertbox = new AlertDialog.Builder(getContext());
             alertbox.setTitle("API Request Failed");
             alertbox.setIcon(R.drawable.ic_error_outline_black_24dp);
             alertbox.setMessage("Something went wrong with API request");
             alertbox.create().show();
             return;
-        }
-        else{
+        } else {
             this.data = data;
         }
 
         // setup View Pager
         viewPager2 = (ViewPager2) getView().findViewById(R.id.viewpager2);
-        pageStateAdapter = new PageStateAdapter(this, data);
+        pageStateAdapter = new PageStateAdapter(this, data, category);
         viewPager2.setAdapter(pageStateAdapter);
+
+        // restore last child state
+        if (DummyFragment.lastChildAt.containsKey(category))
+            viewPager2.setCurrentItem(DummyFragment.lastChildAt.get(category) - 1, false);
+
     }
 
     @Override

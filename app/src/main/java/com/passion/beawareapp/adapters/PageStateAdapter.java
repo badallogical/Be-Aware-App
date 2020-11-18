@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.passion.beawareapp.fragments.ChildFragment;
+import com.passion.beawareapp.fragments.DummyFragment;
 import com.passion.beawareapp.models.News;
 
 import java.util.ArrayList;
@@ -13,19 +14,22 @@ import java.util.ArrayList;
 public class PageStateAdapter extends FragmentStateAdapter {
 
     ArrayList<News> news;
+    int category;
 
     public PageStateAdapter( Fragment fragment ){
         super(fragment);
     }
 
-    public PageStateAdapter( Fragment fragment, ArrayList<News> news ) {
+    public PageStateAdapter( Fragment fragment, ArrayList<News> news , int category) {
         super(fragment);
         this.news = news;
+        this.category = category;
     }
 
     @Override
     public Fragment createFragment(int position) {
        Fragment f = new ChildFragment(news.get(position));
+       DummyFragment.lastChildAt.put(category, position);
        return f;
     }
 

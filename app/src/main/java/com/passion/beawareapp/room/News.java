@@ -14,15 +14,17 @@ public class News {
 
     private String title;
     private String content;
+    private String category;
 
     @ColumnInfo( typeAffinity = ColumnInfo.BLOB )
     private byte[] img;
 
 
-    public News(String title, String content, byte[] img ){
+    public News(String title, String content, byte[] img, String category ){
         this.title = title;
         this.content = content;
         this.img = img;
+        this.category = category;
     }
 
     public long getId() {
@@ -41,12 +43,12 @@ public class News {
         return img;
     }
 
+    public String getCategory(){
+        return category;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
-
-
-
-
 
 }

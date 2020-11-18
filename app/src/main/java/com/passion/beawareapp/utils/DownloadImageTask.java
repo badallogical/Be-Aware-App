@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -35,11 +36,16 @@ public class DownloadImageTask extends AsyncTask< String, Void, Bitmap> {
             Log.v( LOG , " "+ e.getMessage() );
         }
 
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+//        byte[] img = bos.toByteArray();
+
+
         return bmp;
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        imgview.setImageBitmap( bitmap );
+        imgview.setImageBitmap(bitmap);
     }
 }
